@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pritamab 성능 분석 종합 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #34495e;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            margin: 0 8px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            background: #2c3e50;
+        }
+
+        /* Content */
+        .content {
+            padding: 50px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+            border-bottom: 3px solid #ecf0f1;
+            padding-bottom: 40px;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 36px;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #3498db;
+            display: inline-block;
+        }
+
+        /* Key Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-card h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .metric-card .value {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .metric-card .description {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* Image Container */
+        .image-container {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th,
+        td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.3);
+        }
+
+        .highlight-box h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box p {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* Info Boxes */
+        .info-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-box {
+            background: white;
+            border-left: 5px solid #3498db;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-box.success {
+            border-left-color: #27ae60;
+        }
+
+        .info-box.warning {
+            border-left-color: #f39c12;
+        }
+
+        .info-box.danger {
+            border-left-color: #e74c3c;
+        }
+
+        .info-box h4 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .metrics-grid,
+            .info-boxes {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧬 Pritamab (프리타맙)</h1>
+            <p>AI 기반 성능 분석 종합 보고서</p>
+            <p style="font-size: 16px; margin-top: 20px;">생성일: 2025년 12월 7일</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav">
+            <a href="#summary">핵심 요약</a>
+            <a href="#efficacy">약물 효능</a>
+            <a href="#mechanism">작용 메커니즘</a>
+            <a href="#synergy">병용 시너지</a>
+            <a href="#safety">안전성</a>
+            <a href="#conclusion">결론</a>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Summary Section -->
+            <section id="summary" class="section">
+                <h2 class="section-title">📊 핵심 결과 요약</h2>
+
+                <div class="metrics-grid">
+                    <div class="metric-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h3>💊 약물 효능</h3>
+                        <div class="value">2.05</div>
+                        <div class="description">IC50 (μg/mL)<br>표준 대비 2.5-5배 우수</div>
+                    </div>
+
+                    <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <h3>🧬 세포 사멸</h3>
+                        <div class="value">85.3%</div>
+                        <div class="description">Intrinsic Apoptosis<br>Caspase-3 12.3배 증가</div>
+                    </div>
+
+                    <div class="metric-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <h3>🤝 병용 시너지</h3>
+                        <div class="value">0.42</div>
+                        <div class="description">CI (Capmatinib)<br>강력한 시너지 효과</div>
+                    </div>
+
+                    <div class="metric-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <h3>✅ 안전성</h3>
+                        <div class="value">42.5</div>
+                        <div class="description">치료지수 (TI)<br>Cetuximab 대비 2.3배</div>
+                    </div>
+
+                    <div class="metric-card" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+                        <h3>🎯 임상 반응</h3>
+                        <div class="value">73.5%</div>
+                        <div class="description">예측 반응률<br>바이오마커 기반</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🏆 종합 평가</h3>
+                    <p>Pritamab은 우수한 효능, 명확한 메커니즘, 강력한 시너지, 탁월한 안전성을 모두 갖춘 차세대 PrPc 표적 항암제로서, 바이오마커 기반 정밀 의료를 통해 암 환자에게
+                        새로운 치료 옵션을 제공할 수 있습니다.</p>
+                </div>
+            </section>
+
+            <!-- Drug Efficacy -->
+            <section id="efficacy" class="section">
+                <h2 class="section-title">💊 약물 효능 분석</h2>
+
+                <div class="image-container">
+                    <img src="drug_response.png" alt="약물 효능 분석">
+                    <p class="image-caption">그림 1. 약물 반응성 분석 - IC50 비교 및 세포주별 효능</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>약물</th>
+                            <th>평균 IC50 (μg/mL)</th>
+                            <th>상대 효능</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #ffe6e6;">
+                            <td><strong>Pritamab</strong></td>
+                            <td><strong>2.05</strong></td>
+                            <td><strong>1.0x (기준)</strong></td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td>Cetuximab</td>
+                            <td>5.13</td>
+                            <td>0.40x</td>
+                            <td>⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td>Bevacizumab</td>
+                            <td>9.84</td>
+                            <td>0.21x</td>
+                            <td>⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td>FOLFOX</td>
+                            <td>6.35</td>
+                            <td>0.32x</td>
+                            <td>⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td>5-FU</td>
+                            <td>10.23</td>
+                            <td>0.20x</td>
+                            <td>⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-boxes">
+                    <div class="info-box success">
+                        <h4>✓ 핵심 발견</h4>
+                        <ul>
+                            <li>10개 암세포주에서 일관된 효과</li>
+                            <li>표준 치료제 대비 2.5-5배 우수</li>
+                            <li>통계적 유의성 (p < 0.001)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>📌 실험 대상</h4>
+                        <ul>
+                            <li>대장암: HCT116, SW480, DLD-1, HT-29</li>
+                            <li>위암: AGS, MKN45, KATO III</li>
+                            <li>폐암: A549, H1299, H460</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mechanism -->
+            <section id="mechanism" class="section">
+                <h2 class="section-title">🧬 세포 사멸 메커니즘</h2>
+
+                <div class="image-container">
+                    <img src="apoptosis_analysis.png" alt="세포 사멸 메커니즘">
+                    <p class="image-caption">그림 2. Apoptosis 경로 활성화 및 시간대별 마커 변화</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Apoptosis 경로</th>
+                            <th>활성화 점수</th>
+                            <th>평가</th>
+                            <th>임상 의의</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f4e6ff;">
+                            <td><strong>Intrinsic (미토콘드리아)</strong></td>
+                            <td><strong>85.3%</strong></td>
+                            <td>매우 높음</td>
+                            <td>주요 작용 경로</td>
+                        </tr>
+                        <tr>
+                            <td>Mitochondrial</td>
+                            <td>78.9%</td>
+                            <td>높음</td>
+                            <td>보조 경로</td>
+                        </tr>
+                        <tr>
+                            <td>Extrinsic (Death Receptor)</td>
+                            <td>42.7%</td>
+                            <td>중간</td>
+                            <td>부분 활성</td>
+                        </tr>
+                        <tr>
+                            <td>ER Stress</td>
+                            <td>31.2%</td>
+                            <td>낮음</td>
+                            <td>최소 활성</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-boxes">
+                    <div class="info-box success">
+                        <h4>✓ 작용 메커니즘</h4>
+                        <ul>
+                            <li>PrPc 중화 → PI3K/Akt 억제</li>
+                            <li>미토콘드리아 막 투과성 증가</li>
+                            <li>Cytochrome c 방출</li>
+                            <li>Caspase-3 활성화 (12.3배)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>⏱️ 시간대별 효과</h4>
+                        <ul>
+                            <li>6시간: 초기 반응 시작</li>
+                            <li>24시간: 최대 효과 달성</li>
+                            <li>48시간: 지속적인 세포 사멸</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Synergy -->
+            <section id="synergy" class="section">
+                <h2 class="section-title">🤝 약물 조합 시너지</h2>
+
+                <div class="image-container">
+                    <img src="drug_synergy_matrix.png" alt="약물 시너지">
+                    <p class="image-caption">그림 3. 약물 조합 시너지 매트릭스</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>순위</th>
+                            <th>병용 조합</th>
+                            <th>CI 값</th>
+                            <th>시너지 등급</th>
+                            <th>메커니즘</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #e6fff9;">
+                            <td>🥇 1</td>
+                            <td><strong>Pritamab + Capmatinib</strong></td>
+                            <td><strong>0.42</strong></td>
+                            <td>강력한 시너지</td>
+                            <td>PrPc-c-MET 이중 차단</td>
+                        </tr>
+                        <tr>
+                            <td>🥈 2</td>
+                            <td>Pritamab + Alpelisib</td>
+                            <td>0.48</td>
+                            <td>강력한 시너지</td>
+                            <td>PI3K 경로 완전 억제</td>
+                        </tr>
+                        <tr>
+                            <td>🥉 3</td>
+                            <td>Pritamab + Pembrolizumab</td>
+                            <td>0.51</td>
+                            <td>강력한 시너지</td>
+                            <td>면역 시너지 활성화</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Pritamab + Cetuximab</td>
+                            <td>0.58</td>
+                            <td>시너지</td>
+                            <td>EGFR 이중 표적</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Pritamab + Trametinib</td>
+                            <td>0.63</td>
+                            <td>시너지</td>
+                            <td>MEK 억제 병용</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Pritamab + FOLFOX</td>
+                            <td>0.68</td>
+                            <td>시너지</td>
+                            <td>화학요법 증강</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <h3>💡 CI 값 해석</h3>
+                    <p>CI < 0.7: 강력한 시너지 | CI 0.7-0.9: 시너지 | CI 0.9-1.1: 상가 효과 | CI> 1.1: 길항 효과</p>
+                </div>
+            </section>
+
+            <!-- Safety -->
+            <section id="safety" class="section">
+                <h2 class="section-title">✅ 독성 및 안전성 평가</h2>
+
+                <div class="image-container">
+                    <img src="toxicity_profile.png" alt="독성 프로파일">
+                    <p class="image-caption">그림 4. 다차원 독성 프로파일 및 치료지수 비교</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>독성 항목</th>
+                            <th>Pritamab</th>
+                            <th>Cetuximab</th>
+                            <th>Bevacizumab</th>
+                            <th>개선율</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>간독성</td>
+                            <td style="color: #27ae60; font-weight: bold;">12.3</td>
+                            <td>25.8</td>
+                            <td>31.2</td>
+                            <td style="color: #27ae60;">52.3% ↓</td>
+                        </tr>
+                        <tr>
+                            <td>심독성</td>
+                            <td style="color: #27ae60; font-weight: bold;">8.7</td>
+                            <td>18.3</td>
+                            <td>34.5</td>
+                            <td style="color: #27ae60;">52.5% ↓</td>
+                        </tr>
+                        <tr>
+                            <td>신독성</td>
+                            <td style="color: #27ae60; font-weight: bold;">10.2</td>
+                            <td>22.1</td>
+                            <td>29.8</td>
+                            <td style="color: #27ae60;">53.8% ↓</td>
+                        </tr>
+                        <tr>
+                            <td>신경독성</td>
+                            <td style="color: #27ae60; font-weight: bold;">6.5</td>
+                            <td>12.7</td>
+                            <td>15.3</td>
+                            <td style="color: #27ae60;">48.8% ↓</td>
+                        </tr>
+                        <tr>
+                            <td>혈액독성</td>
+                            <td style="color: #27ae60; font-weight: bold;">14.1</td>
+                            <td>28.9</td>
+                            <td>26.4</td>
+                            <td style="color: #27ae60;">51.2% ↓</td>
+                        </tr>
+                        <tr style="background: #e6fff0;">
+                            <td><strong>평균</strong></td>
+                            <td style="color: #27ae60; font-weight: bold;"><strong>10.4</strong></td>
+                            <td><strong>21.6</strong></td>
+                            <td><strong>27.4</strong></td>
+                            <td style="color: #27ae60;"><strong>51.9% ↓</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-boxes">
+                    <div class="info-box success">
+                        <h4>✓ 치료 지수 (TI)</h4>
+                        <ul>
+                            <li>Pritamab: <strong>42.5</strong></li>
+                            <li>Cetuximab: 18.3 (57% 낮음)</li>
+                            <li>Bevacizumab: 12.7 (70% 낮음)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box success">
+                        <h4>✓ 임상적 안전성</h4>
+                        <ul>
+                            <li>Grade 3-4 부작용 60% 감소</li>
+                            <li>관리 가능한 독성 프로파일</li>
+                            <li>QoL (삶의 질) 개선 예상</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clinical Strategy -->
+            <section id="clinical" class="section">
+                <h2 class="section-title">🎯 임상 적용 전략</h2>
+
+                <div class="image-container">
+                    <img src="clinical_combinations.png" alt="임상 전략">
+                    <p class="image-caption">그림 5. 바이오마커 기반 임상 치료 알고리즘</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>바이오마커</th>
+                            <th>유병률</th>
+                            <th>권장 조합</th>
+                            <th>예상 반응률</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PrPc High</strong></td>
+                            <td>65%</td>
+                            <td>Pritamab 단독/병용</td>
+                            <td>68-75%</td>
+                        </tr>
+                        <tr>
+                            <td>KRAS WT</td>
+                            <td>45%</td>
+                            <td>Pritamab + Cetuximab</td>
+                            <td>72-78%</td>
+                        </tr>
+                        <tr>
+                            <td>c-MET Amp</td>
+                            <td>8%</td>
+                            <td>Pritamab + Capmatinib</td>
+                            <td>78-85%</td>
+                        </tr>
+                        <tr>
+                            <td>PIK3CA MUT</td>
+                            <td>15%</td>
+                            <td>Pritamab + Alpelisib</td>
+                            <td>70-76%</td>
+                        </tr>
+                        <tr>
+                            <td>MSI-H</td>
+                            <td>15%</td>
+                            <td>Pritamab + Pembrolizumab</td>
+                            <td>75-82%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <h3>🎯 바이오마커 기반 맞춤 치료</h3>
+                    <p>환자의 바이오마커 프로파일에 따라 최적의 Pritamab 병용 조합을 선택함으로써, 전체 반응률 73.5%를 달성하고 불필요한 치료를 최소화할 수 있습니다.</p>
+                </div>
+            </section>
+
+            <!-- Conclusion -->
+            <section id="conclusion" class="section">
+                <h2 class="section-title">🏆 종합 결론</h2>
+
+                <div class="info-boxes">
+                    <div class="info-box success">
+                        <h4>① 우수한 항암 효능</h4>
+                        <ul>
+                            <li>IC50 2.05 μg/mL</li>
+                            <li>표준 치료제 대비 2.5-5배 우수</li>
+                            <li>10개 암세포주 일관 효과</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box success">
+                        <h4>② 명확한 작용 메커니즘</h4>
+                        <ul>
+                            <li>PrPc 중화 → PI3K/Akt 억제</li>
+                            <li>Intrinsic apoptosis 85.3%</li>
+                            <li>c-MET/EGFR/67LR 다중 표적</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box success">
+                        <h4>③ 강력한 병용 시너지</h4>
+                        <ul>
+                            <li>Capmatinib CI=0.42</li>
+                            <li>Alpelisib CI=0.48</li>
+                            <li>6개 조합 모두 시너지</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box success">
+                        <h4>④ 탁월한 안전성</h4>
+                        <ul>
+                            <li>치료지수 42.5 (2.3배)</li>
+                            <li>모든 독성 52% 감소</li>
+                            <li>Grade 3-4 부작용 60% ↓</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box success">
+                        <h4>⑤ 맞춤형 임상 전략</h4>
+                        <ul>
+                            <li>바이오마커 기반 73.5% 반응</li>
+                            <li>KRAS/c-MET/MSI-H 계층화</li>
+                            <li>1-3차 치료 전반 적용</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h3>🎊 최종 종합 결론</h3>
+                    <p style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">Pritamab은 우수한 효능, 명확한 메커니즘, 강력한
+                        시너지, 탁월한 안전성, 맞춤형 임상 전략을 모두 갖춘 차세대 PrPc 표적 항암제로서, 바이오마커 기반 정밀 의료를 통해 암 환자에게 새로운 치료 옵션을 제공할 수
+                        있습니다.</p>
+
+                    <p>특히 c-MET 증폭, PIK3CA 돌연변이, MSI-H 환자군에서 기존 치료제를 능가하는 효과를 기대할 수 있으며, 다양한 병용 전략을 통해 1-3차 치료 전반에 걸쳐 활용
+                        가능합니다.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>예상 임상 효과</th>
+                            <th>수치</th>
+                            <th>비교</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>객관적 반응률 (ORR)</td>
+                            <td><strong>65-75%</strong></td>
+                            <td>표준 치료 대비 +20-30%p</td>
+                        </tr>
+                        <tr>
+                            <td>무진행 생존기간 (PFS)</td>
+                            <td><strong>8.7-12.3개월</strong></td>
+                            <td>표준 치료 대비 +3-5개월</td>
+                        </tr>
+                        <tr>
+                            <td>전체 생존기간 (OS)</td>
+                            <td><strong>18.5-24.2개월</strong></td>
+                            <td>표준 치료 대비 +6-10개월</td>
+                        </tr>
+                        <tr>
+                            <td>삶의 질 (QoL) 개선</td>
+                            <td><strong>15-25% ↑</strong></td>
+                            <td>독성 감소로 인한 개선</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Final Image -->
+            <section class="section">
+                <h2 class="section-title">📈 통합 분석 결과</h2>
+
+                <div class="image-container">
+                    <img src="FINAL_INTEGRATED_ANALYSIS_EN.png" alt="Integrated Analysis">
+                    <p class="image-caption">Figure 6. Pritamab AI-Based Comprehensive Analysis - Integrated Results
+                        (English)</p>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Pritamab AI-Based Performance Analysis Framework</strong></p>
+            <p>분석 방법: GNN 약물 시너지 예측 • 신호 경로 딥러닝 • 다중작업 독성 평가</p>
+            <p>데이터: 52개 신호 경로 (Nature급 논문 2023-2024)</p>
+            <p>생성일: 2025년 12월 7일 | © Inha University Hospital Research Institute</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+# Implementation Plan: Visual Assets for AI Anticancer Drug Combination System
+
+## Overview
+Creating 10 detailed images and 12 tables for the AI-based anticancer drug combination system research paper.
+
+## Current Status
+- **Issue**: Cannot access the HWP file "인공지능 기반 항암제 정밀 조합 시스템.hwp" as it's in Downloads directory (outside workspace)
+- **Alternative**: The user has `AI_Anticancer_System_SCI_Paper_Complete.md` open in Downloads
+- **Available Reference**: Previous work on [AI_Anticancer_Cocktail_Paper_KR_Full.txt](file:///c:/Users/brook/Desktop/%ED%95%AD%EC%95%94%EC%A0%9C%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/%ED%95%AD%EC%95%94%EC%A0%9C%20%EC%B9%B5%ED%85%8C%EC%9D%BC/AI_Anticancer_Cocktail_Paper_KR_Full.txt) in the workspace
+
+## User Decision Required
+
+### Option 1: Copy HWP File to Workspace
+Copy `인공지능 기반 항암제 정밀 조합 시스템.hwp` to:
+```
+c:\Users\brook\Desktop\항암제 프로그램\항암제 칵테일\
+```
+
+### Option 2: Disable Workspace Validation
+Allow access to Downloads directory to read the markdown file directly.
+
+### Option 3: Work from Existing Materials
+Use the existing Korean paper ([AI_Anticancer_Cocktail_Paper_KR_Full.txt](file:///c:/Users/brook/Desktop/%ED%95%AD%EC%95%94%EC%A0%9C%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/%ED%95%AD%EC%95%94%EC%A0%9C%20%EC%B9%B5%ED%85%8C%EC%9D%BC/AI_Anticancer_Cocktail_Paper_KR_Full.txt)) as the basis for creating visual assets.
+
+---
+
+## Proposed Visual Assets (10 Images)
+
+Based on typical AI anticancer research papers, the 10 images should include:
+
+### 1. **System Architecture Diagram**
+- Overall AI system framework
+- Data flow: Clinical data → Cellpose analysis → Drug recommendation
+- Integration points between components
+
+### 2. **Cellpose Cell Segmentation Workflow**
+- Before/after image comparison
+- Vector flow visualization
+- Feature extraction process
+
+### 3. **Neural Network Architecture**
+- Multi-modal input fusion
+- Hidden layers structure
+- Output: Efficacy, Synergy, Toxicity scores
+
+### 4. **Model Performance Comparison**
+- Bar chart: Random Forest, Gradient Boosting, Neural Network, Ensemble
+- Accuracy metrics (already created: 92.4% ensemble)
+
+### 5. **Drug Synergy Heatmap**
+- Matrix showing synergy scores between drug pairs
+- Color-coded: Green (synergistic), Yellow (additive), Red (antagonistic)
+
+### 6. **Clinical Trial Results - Efficacy**
+- Box plots comparing FOLFOX, FOLFIRI, FOLFOX+Pritamab, FOLFIRI+Pritamab
+- Statistical significance markers
+
+### 7. **Toxicity Profile Comparison**
+- Radar chart showing different toxicity types
+- Comparison between standard therapy and AI-recommended therapy
+
+### 8. **Patient Subgroup Analysis**
+- Forest plot showing hazard ratios
+- Subgroups: Age, KRAS status, Cancer stage, ECOG status
+
+### 9. **ROC Curves for Prediction Models**
+- Multiple ROC curves for efficacy, synergy, toxicity predictions
+- AUC values displayed
+
+### 10. **Kaplan-Meier Survival Curves**
+- Progression-free survival (PFS)
+- Overall survival (OS)
+- Comparison of treatment groups
+
+---
+
+## Proposed Data Tables (12 Tables)
+
+### 1. **Patient Demographics and Baseline Characteristics**
+- Age, Gender, Cancer type, Stage, ECOG status
+- Sample size breakdown
+
+### 2. **Drug Database Specifications**
+- Drug names, Mechanisms of action, FDA approval status
+- Base efficacy and toxicity scores
+
+### 3. **Cellpose Analysis Parameters**
+- Diameter, Flow threshold, Cell probability threshold
+- Processing time comparison (CPU vs GPU)
+
+### 4. **Extracted Cell Features**
+- Feature name, Calculation formula, Normal range, Cancer range
+
+### 5. **Model Hyperparameters**
+- Random Forest, Gradient Boosting, Neural Network settings
+- Training parameters, Validation strategy
+
+### 6. **Model Performance Metrics**
+- Accuracy, Precision, Recall, F1-score, AUC
+- For each model variant
+
+### 7. **Drug Combination Results - FOLFOX Group**
+- Efficacy, Synergy, Toxicity, Overall score
+- Standard vs Pritamab-enhanced
+
+### 8. **Drug Combination Results - FOLFIRI Group**
+- Same metrics as Table 7
+
+### 9. **Subgroup Analysis Results**
+- Efficacy by patient characteristics
+- Interaction p-values
+
+### 10. **Adverse Events Comparison**
+- Common Terminology Criteria for Adverse Events (CTCAE)
+- Grade 3/4 toxicities frequency
+
+### 11. **Computational Performance Benchmarks**
+- Processing time, Memory usage, GPU utilization
+- Scalability metrics
+
+### 12. **Comparison with Existing AI Systems**
+- System name, Accuracy, Data modalities used
+- Benchmarking against published methods
+
+---
+
+## Technical Approach
+
+### Image Generation Strategy
+Since Photoshop cannot be directly controlled via API, I will:
+
+1. **Generate Python-based visualizations** using:
+   - Matplotlib for charts and plots
+   - Seaborn for statistical visualizations
+   - Plotly for interactive elements (exported as static PNG)
+   - NetworkX for system diagrams
+
+2. **Create high-resolution outputs**:
+   - 300 DPI for publication quality
+   - Large canvas sizes (3000x2000 pixels minimum)
+   - Professional color schemes (Nature/Science journal style)
+
+3. **Provide Photoshop-ready assets**:
+   - Save as layered PSD files where possible
+   - Include separate PNG exports
+   - Provide editable SVG where applicable
+
+### Table Generation Strategy
+1. **Create detailed CSV/Excel files**
+2. **Generate formatted table images** using:
+   - Matplotlib table rendering
+   - Pandas styling for professional appearance
+3. **Export in multiple formats**:
+   - PNG for embedding
+   - LaTeX format for academic publishing
+   - Excel for data editing
+
+---
+
+## Next Steps
+
+**Waiting for user decision** on how to proceed with accessing the source document.
+
+Once source material is accessible:
+1. Analyze document structure
+2. Extract data points for each table
+3. Design visual style guide
+4. Generate all 10 images
+5. Create all 12 tables
+6. Package for delivery
